@@ -1,10 +1,10 @@
 Installation
 ====
 
-git clone project & install with npm
+git clone project & install dependencies with npm
 
 ```
-npm install
+googleapis@27 --save
 ```
 
 Launch
