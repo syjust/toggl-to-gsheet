@@ -1,4 +1,5 @@
-const GoogleSheetApi = require('./google-api.js');
+const GoogleSheetApi = require(__dirname+'/src/google-api.js');
+
 gApi = new GoogleSheetApi();
 gApi.listMajors(printMajors);
 

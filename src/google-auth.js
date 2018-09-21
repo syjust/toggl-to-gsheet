@@ -5,8 +5,8 @@ const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-const TOKEN_PATH = 'google-token.json';
-const CREDENTIAL_PATH = 'google-credentials.json';
+const TOKEN_PATH = __dirname+'/google-token.json';
+const CREDENTIAL_PATH = __dirname+'/google-credentials.json';
 
 module.exports = class GoogleAuth {
 

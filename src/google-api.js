@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
-const GoogleAuth = require('./google-auth.js');
+const GoogleAuth = require(__dirname+'/google-auth.js');
 
 module.exports = class GoogleSheetApi {
 
