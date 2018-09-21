@@ -1,3 +1,5 @@
 node_modules
 *google-credentials.json
 *google-token.json
+toggl.conf
+toggl-*csv
