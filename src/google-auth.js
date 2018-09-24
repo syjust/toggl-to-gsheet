@@ -4,7 +4,7 @@ const {google} = require('googleapis');
 
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const TOKEN_PATH = __dirname+'/google-token.json';
 const CREDENTIAL_PATH = __dirname+'/google-credentials.json';
 
@@ -47,7 +47,7 @@ module.exports = class GoogleAuth {
 
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
-      if (err) return getNewToken(oAuth2Client, callback);
+      if (err) return this.getNewToken(oAuth2Client, callback);
       oAuth2Client.setCredentials(JSON.parse(token));
       callback(oAuth2Client);
     });
