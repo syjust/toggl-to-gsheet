@@ -1,26 +1,41 @@
 const program = require('commander');
 const GoogleSheetApi = require(__dirname+'/src/google-api.js');
+const csv = require('csvtojson');
 
-var csvFile;
 program
   .version('0.0.1')
-  .usage('[options] [file]')
   .option('-c, --custom-spreadsheet <spreadsheet>', 'give a custom spreadsheet id as argument')
   .option('-p, --print-majors', 'print majors of example spreadsheet (this is default behavior)')
-  .option('-s, --sync-sheet', 'sync toggl (given in csv file) to spreadsheet')
-  .arguments('[file]')
-  .action(function(file) {
-    csvFile = file;
-  })
+  .option('-s, --sync-sheet <YEAR>', 'sync toggl (given in toggle-reports-YEAR.csv file) to spreadsheet', parseInt)
   .parse(process.argv);
 
 gApi = new GoogleSheetApi();
-if (program.printMajors) {
-  gApi.listMajors(printMajors);
-} else if (program.syncSheet) {
-  gApi.updateSheet(syncSheet);
+if (!!program.printMajors && !!program.syncSheet) {
+  console.error('please choose only one option between -p & -s');
+  return process.exit(1);
+}
+if (!!program.printMajors) {
+  gApi.listMajors({
+    callback: printMajors,
+    spreadsheetId: (!!program.customSpreadsheet) ? program.customSpreadsheet : '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
+  });
+} else if (!!program.syncSheet) {
+  csv({
+    output: 'csv'
+  })
+  .fromFile(`toggl-reports-${program.syncSheet}.csv`)
+  .then((jsonObj)=>{
+    gApi.updateSheet({
+      // sheet.range must be exists
+      range: `Toggl_time_entries_${program.syncSheet}-01-01_to_${program.syncSheet}-12-31!A2:N`,
+      data: jsonObj,
+      callback: syncSheet,
+      spreadsheetId: program.customSpreadsheet
+    });
+  });
 } else {
   console.error('none of -p or -s are selected');
+  return process.exit(1);
 }
 
 function printMajors(res) {
@@ -36,14 +51,10 @@ function printMajors(res) {
   }
 }
 function syncSheet(res) {
-  console.log(JSON.stringify(res.data));
-  var rows = res.data.values;
-  if (!!rows && !!rows.length) {
-    console.log('sheet');
-    // Print columns A and E, which correspond to indices 0 and 4.
-    rows.map((row) => {
-      console.log(JSON.stringify(row));
-    });
+  //console.log(res.data);
+  if (!!res.data) {
+    console.log(`Updated SpreadSheet ID:"${res.data.spreadsheetId}"`);
+    console.log(`Updated range:"${res.data.updatedRange}"`);
   } else {
     console.log('No data found.');
   }

@@ -1,30 +1,30 @@
-const fs = require('fs');
-const readline = require('readline');
 const {google} = require('googleapis');
 const GoogleAuth = require(__dirname+'/google-auth.js');
 
 module.exports = class GoogleSheetApi {
 
   /**
-   * @param {callbacks} map with action to do for each functions
+   * {{{ @function constructor
+   * @param {configs} map with action to do for each configs
    */
-  constructor(callbacks = {}) {
+  constructor(configs = {}) {
     this.gAuth = new GoogleAuth();
-    this.callbacks = callbacks ;
+    this.configs = configs;
 
     this.initBoundedFunctions();
   }
+  // }}}
 
   /**
-   * @function initBoundedFunctions
+   * {{{ @function initBoundedFunctions
    *
-   * define here functions that need to be used as callback with this references inside them
+   * define here configs that need to be used as callback with this references inside them
    */
   initBoundedFunctions() {
     var self = this;
 
     /**
-     * @function getMajors
+     * {{{ @function getMajors
      *
      * Get the names and majors of students in a sample spreadsheet:
      *
@@ -32,56 +32,53 @@ module.exports = class GoogleSheetApi {
      * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
      */
     this.getMajors = function(auth) {
+      const config = self.configs.getMajors;
       const sheets = google.sheets({version: 'v4', auth});
       sheets.spreadsheets.values.get({
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+        spreadsheetId: config.spreadsheetId,
         range: 'Class Data!A2:E'
       }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
-        if (self.callbacks.getMajors !== undefined) {
-          self.callbacks.getMajors(res);
+        if (config.callback !== undefined) {
+          config.callback(res);
         }
       });
     }
+    // }}}
 
+    /**
+     * @function setSheet
+     */
     this.setSheet = function(auth) {
-      var good_sheet    = "1DWRHTx-i4_khB4A6nja54JJ02hPgcXMUY9EsG_d20x4/edit#gid=1703643935";
-      var default_sheet = "1DWRHTx-i4_khB4A6nja54JJ02hPgcXMUY9EsG_d20x4";
+      const config = self.configs.setSheet
       const sheets = google.sheets({version: 'v4', auth});
       sheets.spreadsheets.values.update({
-        spreadsheetId: default_sheet,
-        range: 'Toggl_time_entries_2018-01-01_to_2018-12-31!A:N',
+        spreadsheetId: config.spreadsheetId,
+        range: config.range,
         valueInputOption: 'RAW',
         resource: {
-            "range": 'Toggl_time_entries_2018-01-01_to_2018-12-31!A:N',
+            range: config.range,
             "majorDimension": 'ROWS',
-            "values": [
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-              [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ],
-            ]
+            "values": config.data
         }
       }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
-        if (self.callbacks.setSheet !== undefined) {
-          self.callbacks.setSheet(res);
+        if (config.callback !== undefined) {
+          config.callback(res);
         }
       });
     }
+    // }}}
   }
+  // }}}
 
   /**
    * @function listMajors
    *
    * @param callback
    */
-  listMajors(callback = undefined) {
-    if (callback !== undefined) {
-      this.callbacks.getMajors = callback;
-    }
+  listMajors(config = {}) {
+    this.configs.getMajors = config;
     this.gAuth.loadGoogleApi(this.getMajors);
   }
 
@@ -90,10 +87,8 @@ module.exports = class GoogleSheetApi {
    *
    * @param callback
    */
-  updateSheet(callback = undefined) {
-    if (callback !== undefined) {
-      this.callbacks.setSheet = callback;
-    }
+  updateSheet(config = {}) {
+    this.configs.setSheet = config;
     this.gAuth.loadGoogleApi(this.setSheet);
   }
 
