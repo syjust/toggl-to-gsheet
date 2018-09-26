@@ -32,5 +32,8 @@ for script in TOGGL GOOGLE ; do
   [ -f "${!script}" ] || quit "${!script} : $script script not found"
 done
 
+# generate toogle-reports.csv script
 $TOGGL $year
+
+# send csv to google sheet
 node $GOOGLE toggle-reports-$year.csv

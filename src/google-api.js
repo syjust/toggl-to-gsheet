@@ -66,8 +66,8 @@ module.exports = class GoogleSheetApi {
         }
       }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
-        if (self.callbacks.getMajors !== undefined) {
-          self.callbacks.getMajors(res);
+        if (self.callbacks.setSheet !== undefined) {
+          self.callbacks.setSheet(res);
         }
       });
     }
