@@ -13,21 +13,25 @@ usage() {
 export -f usage
 # }}}
 
+HERE=`dirname $0`
+
 # {{{ include log.inc.sh
-if [ -f inc/log.inc.sh ] ; then
-  source inc/log.inc.sh
+if [ -f $HERE/inc/log.inc.sh ] ; then
+  source $HERE/inc/log.inc.sh
 else
-  echo "inc/log.inc.sh : file not found"
+  echo "$HERE/inc/log.inc.sh : file not found"
   exit 1
 fi
 # }}}
+
+cd $HERE
 
 # {{{ loading parameters : 'YEAR' and 'SPREADSHEETID' as parameter
 # @param $1 SPREADSHEETID
 # @param $2 [YEAR]
 [ -z $1 ] && quit "I need SPREADSHEETID as first argument"
 spreadsheetId=$1 ; shift
-source inc/load-year.inc.sh
+source $HERE/inc/load-year.inc.sh
 # }}}
 
 TOGGL="./toggl-report.sh"
