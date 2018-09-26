@@ -1,15 +1,39 @@
+Description
+====
+
+This scripts synchronize toggl workspace with a specific google spreadsheet
+
+**USE THIS SCRIPT AT YOUR OWN RISK**
+
 Installation
 ====
 
 git clone project & install dependencies with npm
 
 ```
-npm install googleapis@27 --save
+npm install googleapi@27 --save
 npm install commander --save
 npm install csvtojson --save
 ```
 
-Launch
+Configuration
+====
+
+From console.google.com :
+
+* Swith on the spreadsheet api
+* Then, import your credentials.json
+
+```
+cp toggl.conf-sample toggl.conf
+```
+
+Edit toggl.conf with your prefered editor and set your own values for :
+
+* TOGGL_API_KEY
+* TOGGL_WORKSPACE_ID
+
+Launch application
 ====
 
 Main script launch toggl.sh && node app.js with arguments given :
