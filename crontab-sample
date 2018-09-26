@@ -1,0 +1,6 @@
+ADMIN="YOUR EMAIL HERE"
+SHEET_ID="VALID SPREADSHEET ID HERE"
+TOG_TO_GOO="$HOME/toggl-to-gsheet/main.sh"
+# m h  dom mon dow   command
+59 23 * * 1-6 [ -f $TOG_TO_GOO ] && bash $TOG_TO_GOO $SHEET_ID > /dev/null 2>&1 || echo "$TOG_TO_GOO FAILED" | mail -s "$TOG_TO_GOO FAILED" $ADMIN
+# launch command once per day from monday to saturday at 23:59
