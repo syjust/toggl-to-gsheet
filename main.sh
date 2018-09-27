@@ -41,6 +41,43 @@ for script in TOGGL GOOGLE ; do
   [ -f "${!script}" ] || quit "${!script} : $script script not found"
 done
 
-# generate toogle-reports.csv script && send it to google spreadsheet
-$TOGGL $year \
-  && node $GOOGLE -c $spreadsheetId -s $year
+# {{{ function do_it
+#
+do_it() {
+  func="$1"
+  shift
+  info "launching '$func'"
+  do_${func} $@ \
+    && success "'$func' works fine'" \
+    || quit "'$func' FAIL"
+}
+export -f do_it
+# }}}
+
+# {{{ function do_google
+# send toggl-reports-YEAR.csv to google spreadsheet
+# @param $1 spreadsheetId as string
+# @param $2 year as int
+#
+do_google() {
+  local spreadsheetId="$1"
+  local year="$2"
+  node $GOOGLE -c $spreadsheetId -s $year
+}
+export -f do_google
+# }}}
+
+# {{{ function do_toggl
+# generate toogle-reports.csv script
+# @param $1 year as int
+#
+do_toggl() {
+  local year="$1"
+  $TOGGL $year
+}
+export -f do_toggl
+# }}}
+
+# Launch all actions
+do_it toggl "$year" \
+  && do_it google "$spreadsheetId" "$year"

@@ -1,6 +1,13 @@
 ADMIN="YOUR EMAIL HERE"
 SHEET_ID="VALID SPREADSHEET ID HERE"
 TOG_TO_GOO="$HOME/toggl-to-gsheet/main.sh"
+LOG="$HOME/toggl-to-gsheet/main.log"
 # m h  dom mon dow   command
-59 23 * * 1-6 [ -f $TOG_TO_GOO ] && bash $TOG_TO_GOO $SHEET_ID > /dev/null 2>&1 || echo "$TOG_TO_GOO FAILED" | mail -s "$TOG_TO_GOO FAILED" $ADMIN
-# launch command once per day from monday to saturday at 23:59
+59 23 * * 1-6 [ -f $TOG_TO_GOO ] && bash $TOG_TO_GOO $SHEET_ID >> $LOG 2>&1 || tail -n10 $LOG | mail -s "$TOG_TO_GOO FAILED" $ADMIN
+# * This linelaunch command once per day from monday to saturday at 23:59
+# * If something went wrong, send an email with last 10 lines LOG to ADMIN
+# * To make this crontab works fine, You have to :
+#   - REPLACE $SHEET_ID by a valid google spreadsheet_id (writable by your credentials.json / token.json)
+#   - REPLACE $ADMIN by your email
+#   - REPLACE $HOME by your home directory absolute path (ie: /home/YOUR_NICKNAME)
+#   - or use another path for TOG_TO_GOO & LOG variables
