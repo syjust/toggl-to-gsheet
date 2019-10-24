@@ -13,7 +13,8 @@ usage() {
 export -f usage
 # }}}
 
-HERE=`dirname $0`
+[[ $OSTYPE == "darwin"* ]] && READ_LINK="greadlink" || READ_LINK="readlink"
+HERE=`dirname $(${READ_LINK} -f $0)`
 
 # {{{ include log.inc.sh
 if [ -f $HERE/inc/log.inc.sh ] ; then
