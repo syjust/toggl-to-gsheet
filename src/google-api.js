@@ -47,7 +47,7 @@ module.exports = class GoogleSheetApi {
     // }}}
 
     /**
-     * @function setSheet
+     * {{{ @function setSheet
      */
     this.setSheet = function(auth) {
       const config = self.configs.setSheet
@@ -55,7 +55,8 @@ module.exports = class GoogleSheetApi {
       sheets.spreadsheets.values.update({
         spreadsheetId: config.spreadsheetId,
         range: config.range,
-        valueInputOption: 'RAW',
+        valueInputOption: 'USER_ENTERED',
+        //responseDateTimeRenderOption: "SERIAL_NUMBER",
         resource: {
             range: config.range,
             "majorDimension": 'ROWS',
