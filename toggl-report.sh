@@ -1,5 +1,5 @@
 #!/bin/bash
-TOGGL_REPORTS_API_URL="https://toggl.com/reports/api/v2/details.csv"
+TOGGL_REPORTS_API_URL="https://api.track.toggl.com/reports/api/v2/details.csv"
 CONF="toggl.conf"
 
 # {{{ function usage
